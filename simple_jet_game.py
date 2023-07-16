@@ -1,5 +1,6 @@
 import random
-from pathlib import Path
+import sys
+import os
 
 import pygame
 from pygame.locals import (
@@ -21,6 +22,21 @@ from pygame.locals import (
     K_s,
     K_w,
 )
+
+
+def resource_path(relative_path):
+    if hasattr(sys, "_MEIPASS"):
+        # Running in bundled executable mode
+        base_path = sys._MEIPASS
+    else:
+        # Running in development mode
+        base_path = os.path.abspath(".")
+
+    return os.path.join(base_path, relative_path)
+
+
+ASSETS_DIR = resource_path("assets")
+
 
 ADDENEMY = pygame.USEREVENT + 1
 ADDCLOUD = pygame.USEREVENT + 2
@@ -68,7 +84,7 @@ DEFAULT_PLAYER_SPEED = 5
 DEFAULT_PLAYER_SPEED_CROUCH_MODIFIER = -2
 DEFAULT_PLAYER_SPEED_SPRINT_MODIFIER = 2
 
-DEFAULT_PLAYER_SPRITE = "assets/image/jet.png"
+DEFAULT_PLAYER_SPRITE = os.path.join(ASSETS_DIR, "image/jet.png")
 
 DEFAULT_PLAYER_STAMINA = 100
 DEFAULT_PLAYER_STAMINA_BAR_BORDER = 2
@@ -94,7 +110,7 @@ DEFAULT_CLOUD_SPEED_SPRINT_MODIFIER = 1
 
 DEFAULT_CLOUD_SPAWN_TIMER = 1000
 
-DEFAULT_CLOUD_SPRITE = "assets/image/cloud.png"
+DEFAULT_CLOUD_SPRITE = os.path.join(ASSETS_DIR, "image/cloud.png")
 
 # endregion Cloud
 
@@ -112,7 +128,7 @@ DEFAULT_ENEMY_SPEED_SPRINT_MODIFIER = 5
 
 DEFAULT_ENEMY_SPAWN_TIMER = 250
 
-DEFAULT_ENEMY_SPRITE = "assets/image/missile.png"
+DEFAULT_ENEMY_SPRITE = os.path.join(ASSETS_DIR, "image/missile.png")
 
 # endregion Enemy
 
