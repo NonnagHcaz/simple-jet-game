@@ -22,13 +22,110 @@ from pygame.locals import (
     K_w,
 )
 
-from config import *
-
 ADDENEMY = pygame.USEREVENT + 1
 ADDCLOUD = pygame.USEREVENT + 2
 ADDHEALTH = pygame.USEREVENT + 3
 ADDMANA = pygame.USEREVENT + 4
 ADDSTAMINA = pygame.USEREVENT + 5
+
+SKY_BLUE = (135, 206, 250)
+
+# region Display
+
+DEFAULT_DISPLAY_RESOLUTIONS = {
+    "720p": {"width": 1280, "height": 720},
+    "1080p": {"width": 1920, "height": 1080},
+    "1440p": {"width": 2560, "height": 1440},
+}
+
+DEFAULT_DISPLAY_RESOLUTION = "720p"
+DEFAULT_DISPLAY_HEIGHT = DEFAULT_DISPLAY_RESOLUTIONS[DEFAULT_DISPLAY_RESOLUTION][
+    "height"
+]
+DEFAULT_DISPLAY_WIDTH = DEFAULT_DISPLAY_RESOLUTIONS[DEFAULT_DISPLAY_RESOLUTION]["width"]
+
+# endregion Display
+
+# region Entities
+
+DEFAULT_DROP_HEALTH_TIMER = 60000
+DEFAULT_DROP_MANA_TIMER = 60000
+DEFAULT_DROP_STAMINA_TIMER = 60000
+
+# region Player
+
+DEFAULT_PLAYER_DAMAGE = 2
+DEFAULT_PLAYER_DAMAGE_SCALE = 0.25
+
+DEFAULT_PLAYER_HEALTH = 100
+DEFAULT_PLAYER_HEALTH_BAR_BORDER = 2
+DEFAULT_PLAYER_HEALTH_BAR_COLOR = (255, 0, 0)
+DEFAULT_PLAYER_HEALTH_BAR_HEIGHT = 7
+DEFAULT_PLAYER_HEALTH_BAR_ORDER = 1
+DEFAULT_PLAYER_HEALTH_SCALE = 0.1
+
+DEFAULT_PLAYER_SPEED = 5
+DEFAULT_PLAYER_SPEED_CROUCH_MODIFIER = -2
+DEFAULT_PLAYER_SPEED_SPRINT_MODIFIER = 2
+
+DEFAULT_PLAYER_SPRITE = "assets/image/jet.png"
+
+DEFAULT_PLAYER_STAMINA = 100
+DEFAULT_PLAYER_STAMINA_BAR_BORDER = 2
+DEFAULT_PLAYER_STAMINA_BAR_COLOR = (0, 255, 0)
+DEFAULT_PLAYER_STAMINA_BAR_HEIGHT = 7
+DEFAULT_PLAYER_STAMINA_BAR_ORDER = 2
+DEFAULT_PLAYER_STAMINA_SCALE = 0.25
+
+DEFAULT_PLAYER_MANA = 100
+DEFAULT_PLAYER_MANA_BAR_BORDER = 2
+DEFAULT_PLAYER_MANA_BAR_COLOR = (0, 0, 255)
+DEFAULT_PLAYER_MANA_BAR_HEIGHT = 7
+DEFAULT_PLAYER_MANA_BAR_ORDER = 3
+DEFAULT_PLAYER_MANA_SCALE = 0.1
+
+# endregion Player
+
+# region Cloud
+
+DEFAULT_CLOUD_SPEED = 5
+DEFAULT_CLOUD_SPEED_CROUCH_MODIFIER = -1
+DEFAULT_CLOUD_SPEED_SPRINT_MODIFIER = 1
+
+DEFAULT_CLOUD_SPAWN_TIMER = 1000
+
+DEFAULT_CLOUD_SPRITE = "assets/image/cloud.png"
+
+# endregion Cloud
+
+# region Enemy
+
+DEFAULT_ENEMY_DAMAGE = 5
+DEFAULT_ENEMY_DAMAGE_SCALE = 0.1
+
+DEFAULT_ENEMY_HEALTH = 5
+DEFAULT_ENEMY_HEALTH_SCALE = 0.1
+
+DEFAULT_ENEMY_SPEED = 10
+DEFAULT_ENEMY_SPEED_CROUCH_MODIFIER = -5
+DEFAULT_ENEMY_SPEED_SPRINT_MODIFIER = 5
+
+DEFAULT_ENEMY_SPAWN_TIMER = 250
+
+DEFAULT_ENEMY_SPRITE = "assets/image/missile.png"
+
+# endregion Enemy
+
+# endregion Entities
+
+# region StatusBar
+
+DEFAULT_STATUS_BAR_HEIGHT = 32
+DEFAULT_STATUS_BAR_FONT_SIZE = 32
+DEFAULT_STATUS_BAR_FONT_COLOR = (0, 0, 0)
+DEFAULT_STATUS_BAR_BACKGROUND_COLOR = (255, 255, 255)
+
+# endregion StatusBar
 
 
 def draw_player_status_bar(
@@ -59,7 +156,7 @@ class Entity(pygame.sprite.Sprite):
         walk_speed=1,
         sprint_speed=0,
         crouch_speed=0,
-        colorkey=WHITE,
+        colorkey=pygame.Color("white"),
         *args,
         **kwargs,
     ):
@@ -137,8 +234,8 @@ class Entity(pygame.sprite.Sprite):
             self.parent.screen,
             _rect.topleft,
             _rect.size,
-            BLACK,
-            WHITE,
+            pygame.Color("black"),
+            pygame.Color("white"),
             color,
             value / max_value,
         )
@@ -291,7 +388,7 @@ class Cloud(RandomEntity):
         walk_speed=DEFAULT_CLOUD_SPEED,
         sprint_speed=DEFAULT_CLOUD_SPEED_SPRINT_MODIFIER,
         crouch_speed=DEFAULT_CLOUD_SPEED_CROUCH_MODIFIER,
-        colorkey=BLACK,
+        colorkey=pygame.Color("black"),
         **kwargs,
     ):
         super(Cloud, self).__init__(
@@ -348,7 +445,9 @@ class Game:
         self.player = Player(parent=self)
         self.all_sprites.add(self.player)
 
-    def draw_status_bar(self, background_color=WHITE, text_color=BLACK):
+    def draw_status_bar(
+        self, background_color=pygame.Color("white"), text_color=pygame.Color("black")
+    ):
         font = pygame.font.Font(None, DEFAULT_STATUS_BAR_FONT_SIZE)
         string = f"Health: {self.player.health}/{self.player.max_health} • Deaths: {self.deaths}"
         text = font.render(string, True, text_color, background_color)
